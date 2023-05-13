@@ -1,0 +1,8 @@
+{
+    "editorconfig": true,
+    "semi": true,
+    "endOfLine": "lf",
+    "tabWidth": 4,
+    "useTabs": true,
+    "trailingComma": "es5"
+}
