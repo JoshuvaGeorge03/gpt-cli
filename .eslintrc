@@ -23,7 +23,8 @@
 		"@typescript-eslint/quotes": "off",
 		"space-before-function-paren": "off",
 		"@typescript-eslint/space-before-function-paren": "off",
-		"@typescript-eslint/promise-function-async": "off"
+		"@typescript-eslint/promise-function-async": "off",
+		"@typescript-eslint/object-curly-spacing": "off"
 	},
 	"noInlineConfig": true
 }

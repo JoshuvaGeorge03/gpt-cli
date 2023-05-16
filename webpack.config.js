@@ -9,7 +9,7 @@ module.exports = {
 		path: path.resolve(__dirname, 'gpt'),
 		filename: '[name].js',
 		clean: true,
-		assetModuleFilename: '[name]'
+		assetModuleFilename: '[name].[ext]'
 	},
 	module: {
 		rules: [

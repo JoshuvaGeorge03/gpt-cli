@@ -7,9 +7,10 @@ import type {
 	CreateChatCompletionResponse
 } from 'openai';
 import os from 'os';
-import '../.env';
+import path from 'path';
+import '../gpt.env';
 
-dotenv.config();
+dotenv.config({path: path.resolve(process.cwd(), 'gpt.env')});
 
 const openAIBaseURL = `https://api.openai.com/v1/`;
 const openAiKey: string = process.env.OPEN_API_KEY as string;
