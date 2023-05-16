@@ -1,0 +1,29 @@
+{
+	"root": true,
+	"env": {
+		"browser": true,
+		"es2021": true
+	},
+	"extends": "standard-with-typescript",
+	"overrides": [],
+	"parserOptions": {
+		"ecmaVersion": "latest",
+		"sourceType": "module",
+		"project": ["./tsconfig.json"]
+	},
+	"rules": {
+		"indent": "off",
+		"no-tabs": "off",
+		"semi": "off",
+		"quotes": "off",
+		"@typescript-eslint/semi": "off",
+		"@typescript-eslint/indent": "off",
+		"no-return-await": "off",
+		"@typescript-eslint/return-await": "off",
+		"@typescript-eslint/quotes": "off",
+		"space-before-function-paren": "off",
+		"@typescript-eslint/space-before-function-paren": "off",
+		"@typescript-eslint/promise-function-async": "off"
+	},
+	"noInlineConfig": true
+}

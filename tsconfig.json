@@ -1,0 +1,15 @@
+{
+	"exclude": ["node_modules"],
+	"include": ["src"],
+	"compilerOptions": {
+		"noImplicitAny": true,
+		"module": "NodeNext",
+		"strict": true,
+		"target": "ES2017",
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": true,
+		"moduleResolution": "nodenext",
+		"sourceMap": true
+	}
+}

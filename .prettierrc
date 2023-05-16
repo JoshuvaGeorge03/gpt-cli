@@ -1,8 +1,8 @@
 {
-    "editorconfig": true,
-    "semi": true,
-    "endOfLine": "lf",
-    "tabWidth": 4,
-    "useTabs": true,
-    "trailingComma": "es5"
+	"editorconfig": true,
+	"semi": true,
+	"endOfLine": "lf",
+	"tabWidth": 2,
+	"trailingComma": "none",
+	"singleQuote": true
 }
