@@ -1,4 +1,5 @@
 const path = require('path');
+const BannerPlugin = require('webpack').BannerPlugin;
 
 module.exports = {
 	entry: {
@@ -7,9 +8,10 @@ module.exports = {
 	},
 	output: {
 		path: path.resolve(__dirname, 'gpt'),
-		filename: '[name].js',
+		filename: (pathData) =>
+			pathData.chunk.name === 'gpt' ? 'gpt' : '[name].js',
 		clean: true,
-		assetModuleFilename: '[name].[ext]'
+		assetModuleFilename: '[name][ext]'
 	},
 	module: {
 		rules: [
@@ -27,5 +29,11 @@ module.exports = {
 			}
 		]
 	},
-	target: 'node'
+	target: 'node',
+	plugins: [
+		new BannerPlugin({
+			banner: '#! /usr/bin/env node',
+			raw: true
+		})
+	]
 };
