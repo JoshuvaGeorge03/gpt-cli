@@ -13,7 +13,9 @@ dotenv.config({ path: path.resolve(__dirname, 'gpt.env'), debug: false });
 const openAIBaseURL = `https://api.openai.com/v1/`;
 const openAiKey = process.env.OPEN_API_KEY as string;
 
-async function askGpt(question: string): Promise<CreateChatCompletionResponse> {
+async function askGptBasedOnFetch(
+	question: string
+): Promise<CreateChatCompletionResponse> {
 	const openAiChatUrl = `${openAIBaseURL}chat/completions`;
 	const openAiPayload: CreateChatCompletionRequest = {
 		messages: [
@@ -46,6 +48,8 @@ async function askGpt(question: string): Promise<CreateChatCompletionResponse> {
 			return err;
 		});
 }
+
+async function askGpt(question: string): Promise<void> {}
 
 function parseEventStreamData(eventText: string): string {
 	console.log('event text', eventText);
