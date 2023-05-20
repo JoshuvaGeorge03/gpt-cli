@@ -1,21 +1,19 @@
 import dotenv from 'dotenv';
 import fetch from 'node-fetch';
-import type {
-	CreateChatCompletionRequest,
-	CreateChatCompletionResponse
-} from 'openai';
+import type { CreateChatCompletionRequest } from 'openai';
 import os from 'os';
 import path from 'path';
 import '../gpt.env';
 
-dotenv.config({ path: path.resolve(__dirname, 'gpt.env'), debug: false });
+dotenv.config({ path: path.resolve(__dirname, 'gpt.env'), debug: true });
 
 const openAIBaseURL = `https://api.openai.com/v1/`;
 const openAiKey = process.env.OPEN_API_KEY as string;
+console.log('value', openAiKey);
 
-async function askGptBasedOnFetch(
-	question: string
-): Promise<CreateChatCompletionResponse> {
+// let gptResponse = '';
+
+async function askGpt(question: string): Promise<void> {
 	const openAiChatUrl = `${openAIBaseURL}chat/completions`;
 	const openAiPayload: CreateChatCompletionRequest = {
 		messages: [
@@ -38,10 +36,13 @@ async function askGptBasedOnFetch(
 		body: JSON.stringify(openAiPayload)
 	})
 		.then((gptRes) => {
-			return gptRes.text();
-		})
-		.then((resObj) => {
-			return parseEventStreamData(resObj);
+			gptRes.body.on('data', (data) => {
+				parseEventStreamData(data.toString());
+			});
+
+			gptRes.body.on('end', () => {
+				console.log('response completed');
+			});
 		})
 		.catch((err) => {
 			console.warn('error', err);
@@ -49,11 +50,16 @@ async function askGptBasedOnFetch(
 		});
 }
 
-async function askGpt(question: string): Promise<void> {}
-
-function parseEventStreamData(eventText: string): string {
+function parseEventStreamData(eventText: string): void {
 	console.log('event text', eventText);
-	return eventText;
+	eventText.split(/\n|\r\n|\r/).forEach((chunkValue) => {
+		if (chunkValue?.length > 0) {
+			const streamDataObj = JSON.parse(JSON.stringify(chunkValue.trim()));
+			console.log('streamDataObj', streamDataObj);
+			const streamObjectContent = streamDataObj.choices[0].delta.content;
+			console.log('streamObjectContent', streamObjectContent);
+		}
+	});
 }
 
 function getQuestionFromArgs(): string {
@@ -66,7 +72,7 @@ console.log('question from cli', questionFromCli);
 
 askGpt(questionFromCli)
 	.then((aiValue) => {
-		console.log('aiValue', aiValue);
+		// console.log('aiValue', gptResponse);
 	})
 	.catch((err) => {
 		console.error('err aivalue', err);

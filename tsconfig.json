@@ -11,7 +11,7 @@
 		"skipLibCheck": true,
 		"moduleResolution": "nodenext",
 		"sourceMap": true,
-		"typeRoots": ["typings", "node_modules/@types/"],
+		"typeRoots": ["./typings/", "./node_modules/@types/"],
 		"checkJs": false
 	}
 }
