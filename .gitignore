@@ -131,3 +131,4 @@ dist
 
 #my app specific
 gpt
+gpt.env

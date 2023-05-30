@@ -3,15 +3,22 @@
 	"include": ["src"],
 	"compilerOptions": {
 		"noImplicitAny": true,
-		"module": "NodeNext",
+		"module": "ESNext",
 		"strict": true,
 		"target": "ES2017",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true,
-		"moduleResolution": "nodenext",
+		"moduleResolution": "node",
 		"sourceMap": true,
-		"typeRoots": ["./typings/", "./node_modules/@types/"],
-		"checkJs": false
+		"checkJs": false,
+		"strictNullChecks": true,
+		"allowUnreachableCode": false,
+		"noFallthroughCasesInSwitch": true,
+		"types": [
+			"./node_modules/@types",
+			"./typings"
+		],
+		"allowSyntheticDefaultImports": true
 	}
 }
