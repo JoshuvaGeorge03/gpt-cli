@@ -5,7 +5,7 @@ import os from 'os';
 import path from 'path';
 import '../gpt.env';
 
-dotenv.config({ path: path.resolve(__dirname, 'gpt.env'), debug: true });
+dotenv.config({ path: path.resolve(__dirname, 'gpt-config.env'), debug: true });
 
 const openAIBaseURL = `https://api.openai.com/v1/`;
 const openAiKey = process.env.OPEN_API_KEY as string;
@@ -37,7 +37,7 @@ async function askGpt(question: string): Promise<void> {
 	})
 		.then((gptRes) => {
 			gptRes.body.on('data', (data) => {
-				parseEventStreamData(data.toString());
+				parseEventStreamData(String.fromCharCode.apply(null, data));
 			});
 
 			gptRes.body.on('end', () => {
@@ -54,10 +54,14 @@ function parseEventStreamData(eventText: string): void {
 	console.log('event text', eventText);
 	eventText.split(/\n|\r\n|\r/).forEach((chunkValue) => {
 		if (chunkValue?.length > 0) {
-			const streamDataObj = JSON.parse(JSON.stringify(chunkValue.trim()));
-			console.log('streamDataObj', streamDataObj);
-			const streamObjectContent = streamDataObj.choices[0].delta.content;
-			console.log('streamObjectContent', streamObjectContent);
+			const streamDataObj = JSON.parse(JSON.stringify(`{${chunkValue}}`));
+			console.log('streamDataObj', streamDataObj, typeof streamDataObj);
+			// const streamObjectContent = streamDataObj.choices[0].delta.content;
+			console.log(
+				'streamObjectContent',
+				typeof streamDataObj,
+				Object.values(streamDataObj)
+			);
 		}
 	});
 }

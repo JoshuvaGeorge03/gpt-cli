@@ -15,10 +15,7 @@
 		"strictNullChecks": true,
 		"allowUnreachableCode": false,
 		"noFallthroughCasesInSwitch": true,
-		"types": [
-			"./node_modules/@types",
-			"./typings"
-		],
+		"typeRoots": ["./node_modules/@types", "./typings"],
 		"allowSyntheticDefaultImports": true
 	}
 }

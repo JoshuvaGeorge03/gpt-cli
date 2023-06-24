@@ -130,5 +130,5 @@ dist
 .pnp.*
 
 #my app specific
-gpt
-gpt.env
+gpt/**/*
+gpt-config.env
