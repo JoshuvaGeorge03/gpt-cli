@@ -3,7 +3,9 @@ import fetch from 'node-fetch';
 import type { CreateChatCompletionRequest } from 'openai';
 import os from 'os';
 import path from 'path';
-import '../gpt.env';
+import '../gpt-config.env';
+import logger from './log';
+import { getTypeOf } from './utils';
 
 dotenv.config({ path: path.resolve(__dirname, 'gpt-config.env'), debug: true });
 
@@ -37,7 +39,14 @@ async function askGpt(question: string): Promise<void> {
 	})
 		.then((gptRes) => {
 			gptRes.body.on('data', (data) => {
-				parseEventStreamData(String.fromCharCode.apply(null, data));
+				// parseEventStreamData();
+				logger(getTypeOf(data), 'data type');
+				// const textDecoderFromTypedArray = new TextDecoder('UTF-8');
+				// const decodedData = textDecoderFromTypedArray.decode(data);
+				// logger(decodedData, 'decoded data');
+				// logger(getTypeOf(decodedData), 'type of decoded data');
+				// JSON.parse(decodedData);
+				// logger(Buffer.from(data).toJSON(), 'buffer data');
 			});
 
 			gptRes.body.on('end', () => {

@@ -35,5 +35,8 @@ module.exports = {
 			banner: '#! /usr/bin/env node',
 			raw: true
 		})
-	]
+	],
+	resolve: {
+		extensions: ['.ts', '...']
+	}
 };
