@@ -4,16 +4,14 @@ import type { CreateChatCompletionRequest } from 'openai';
 import os from 'os';
 import path from 'path';
 import '../gpt-config.env';
-import logger from './log';
-import { getTypeOf } from './utils';
 
-dotenv.config({ path: path.resolve(__dirname, 'gpt-config.env'), debug: true });
+dotenv.config({
+	path: path.resolve(__dirname, 'gpt-config.env'),
+	debug: false
+});
 
 const openAIBaseURL = `https://api.openai.com/v1/`;
 const openAiKey = process.env.OPEN_API_KEY as string;
-console.log('value', openAiKey);
-
-// let gptResponse = '';
 
 async function askGpt(question: string): Promise<void> {
 	const openAiChatUrl = `${openAIBaseURL}chat/completions`;
@@ -39,14 +37,16 @@ async function askGpt(question: string): Promise<void> {
 	})
 		.then((gptRes) => {
 			gptRes.body.on('data', (data) => {
-				// parseEventStreamData();
-				logger(getTypeOf(data), 'data type');
-				// const textDecoderFromTypedArray = new TextDecoder('UTF-8');
-				// const decodedData = textDecoderFromTypedArray.decode(data);
-				// logger(decodedData, 'decoded data');
-				// logger(getTypeOf(decodedData), 'type of decoded data');
-				// JSON.parse(decodedData);
-				// logger(Buffer.from(data).toJSON(), 'buffer data');
+				const textDecoderFromTypedArray = new TextDecoder('UTF-8');
+				const decodedData = textDecoderFromTypedArray.decode(data);
+				try {
+					if (decodedData !== 'data: [DONE]') {
+						parseEventStreamData(decodedData);
+					}
+				} catch (error) {
+					console.log('decoded data', decodedData);
+					console.warn('error', error);
+				}
 			});
 
 			gptRes.body.on('end', () => {
@@ -60,17 +60,12 @@ async function askGpt(question: string): Promise<void> {
 }
 
 function parseEventStreamData(eventText: string): void {
-	console.log('event text', eventText);
 	eventText.split(/\n|\r\n|\r/).forEach((chunkValue) => {
 		if (chunkValue?.length > 0) {
-			const streamDataObj = JSON.parse(JSON.stringify(`{${chunkValue}}`));
-			console.log('streamDataObj', streamDataObj, typeof streamDataObj);
-			// const streamObjectContent = streamDataObj.choices[0].delta.content;
-			console.log(
-				'streamObjectContent',
-				typeof streamDataObj,
-				Object.values(streamDataObj)
-			);
+			const santizedValue = chunkValue.replace(/data: /, '').trim();
+			const streamDataObj = JSON.parse(santizedValue);
+			const streamObjectContent = streamDataObj.choices[0].delta.content;
+			console.log(streamObjectContent);
 		}
 	});
 }
@@ -81,12 +76,7 @@ function getQuestionFromArgs(): string {
 }
 
 const questionFromCli = getQuestionFromArgs();
-console.log('question from cli', questionFromCli);
 
-askGpt(questionFromCli)
-	.then((aiValue) => {
-		// console.log('aiValue', gptResponse);
-	})
-	.catch((err) => {
-		console.error('err aivalue', err);
-	});
+askGpt(questionFromCli).catch((err) => {
+	console.error('err aivalue', err);
+});
