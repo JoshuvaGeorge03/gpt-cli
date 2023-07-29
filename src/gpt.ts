@@ -44,17 +44,18 @@ async function askGpt(question: string): Promise<void> {
 						parseEventStreamData(decodedData);
 					}
 				} catch (error) {
-					console.log('decoded data', decodedData);
-					console.warn('error', error);
+					console.error('error', error);
 				}
 			});
 
 			gptRes.body.on('end', () => {
-				console.log('response completed');
+				console.log('\n');
+				console.log('%cQuery Successful', 'color:green;font-size:20px');
+				console.log('\n');
 			});
 		})
 		.catch((err) => {
-			console.warn('error', err);
+			console.error('error', err);
 			return err;
 		});
 }
@@ -65,7 +66,7 @@ function parseEventStreamData(eventText: string): void {
 			const santizedValue = chunkValue.replace(/data: /, '').trim();
 			const streamDataObj = JSON.parse(santizedValue);
 			const streamObjectContent = streamDataObj.choices[0].delta.content;
-			console.log(streamObjectContent);
+			process.stdout.write(streamObjectContent);
 		}
 	});
 }
