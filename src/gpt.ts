@@ -40,9 +40,7 @@ async function askGpt(question: string): Promise<void> {
 				const textDecoderFromTypedArray = new TextDecoder('UTF-8');
 				const decodedData = textDecoderFromTypedArray.decode(data);
 				try {
-					if (decodedData !== 'data: [DONE]') {
-						parseEventStreamData(decodedData);
-					}
+					parseEventStreamData(decodedData);
 				} catch (error) {
 					console.error('error', error);
 				}
@@ -55,20 +53,32 @@ async function askGpt(question: string): Promise<void> {
 			});
 		})
 		.catch((err) => {
-			console.error('error', err);
+			console.error('error in askGpt', err);
 			return err;
 		});
 }
 
-function parseEventStreamData(eventText: string): void {
-	eventText.split(/\n|\r\n|\r/).forEach((chunkValue) => {
-		if (chunkValue?.length > 0) {
-			const santizedValue = chunkValue.replace(/data: /, '').trim();
-			const streamDataObj = JSON.parse(santizedValue);
-			const streamObjectContent = streamDataObj.choices[0].delta.content;
-			process.stdout.write(streamObjectContent);
+function parseEventStreamData(decodedData: string): void {
+	const regexToSplitIncomingEventStream = /\n|\r\n|\r/; // because multiple server side data events can be send together in one flow, so we have to account for it, ex) data: "{"id": "jos"}\ndata: "{id:jso}""
+	decodedData.split(regexToSplitIncomingEventStream).forEach((chunkValue) => {
+		if (Boolean(chunkValue.length) && chunkValue !== 'data: [DONE]') {
+			sanitizeEventValue(chunkValue);
 		}
 	});
+}
+
+function sanitizeEventValue(chunkValue: string): void {
+	const santizedValue = chunkValue.replace(/data: /, '').trim();
+	const sanitizedStreamData = JSON.parse(santizedValue);
+	const sanitizedStreamDataContent =
+		sanitizedStreamData.choices[0].delta.content;
+	outputDataToStdOutStream(sanitizedStreamDataContent);
+}
+
+function outputDataToStdOutStream(eventText: string): void {
+	if (eventText?.length > 0) {
+		process.stdout.write(eventText);
+	}
 }
 
 function getQuestionFromArgs(): string {
